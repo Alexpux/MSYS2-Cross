@@ -38,7 +38,7 @@ PACKAGES=(
 	mpfr
 	mpc
 	w32api-headers
-	w32api-libs
+	w32api-libraries
 	binutils
 	msys2
 	gcc-cross

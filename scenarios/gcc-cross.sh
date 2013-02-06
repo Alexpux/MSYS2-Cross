@@ -38,7 +38,7 @@
 P=gcc-cross
 P_V=gcc-${GCC_VERSION}
 SRC_FILE="$P_V.tar.bz2"
-URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${VERSION}/${SRC_FILE}
+URL=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-${GCC_VERSION}/${SRC_FILE}
 DEPENDS=()
 
 src_download() {
@@ -51,9 +51,9 @@ src_unpack() {
 
 src_patch() {
 	local _patches=(
-		$P/gcc-${GCC_VERSION}-msys.patch
+		gcc/gcc-${GCC_VERSION}-msys.patch
 	)
-	
+
 	func_apply_patches \
 		$P_V \
 		_patches[@]
@@ -63,14 +63,35 @@ src_configure() {
 
 	[[ ! -f $SRC_DIR/$P_V/integrate.marker ]] && {
 		echo "--> Integrating sources in GCC tree"
-		cp -rf $SRC_DIR/msys2/newlib $SRC_DIR/$P_V/
-		cp -rf $SRC_DIR/msys2/winsup $SRC_DIR/$P_V/
-		rm -rf $SRC_DIR/$P_V/winsup/w32api/include/*
-		rm -rf $SRC_DIR/$P_V/winsup/w32api/lib/*
-		cp -rf $PREFIX/include/w32api/* $SRC_DIR/$P_V/winsup/w32api/include/
-		cp -rf $PREFIX/lib/w32api/* $SRC_DIR/$P_V/winsup/w32api/lib/
+		[[ ! -f $SRC_DIR/$P_V/msys.marker ]] && {
+			echo -n "---> Copy msys sources to GCC source tree..."
+			cp -rf $SRC_DIR/msys2/newlib $SRC_DIR/$P_V/ || die "Fail to copy newlib sources"
+			cp -rf $SRC_DIR/msys2/winsup $SRC_DIR/$P_V/ || die "Fail to copy winsup sources"
+			echo "done"
+			touch $SRC_DIR/$P_V/msys.marker
+		}
+
+		[[ ! -f $SRC_DIR/$P_V/w32api-old.marker ]] && {
+			echo -n "---> Remove old win32api from source tree..."
+			[[ -d $SRC_DIR/$P_V/winsup/w32api ]] && {
+				rm -rf $SRC_DIR/$P_V/winsup/w32api/* || die "Fail to remove old win32api"
+			}
+			echo "done"
+			touch $SRC_DIR/$P_V/w32api-old.marker
+		}
+
+		[[ ! -f $SRC_DIR/$P_V/w32api-new.marker ]] && {
+			echo -n "---> Copy new win32api to source tree..."
+			mkdir -p $SRC_DIR/$P_V/winsup/w32api/{include,lib}
+			cp -rf $PREFIX/include/w32api/* $SRC_DIR/$P_V/winsup/w32api/include/ || die "Fail to copy new win32api headers"
+			cp -rf $PREFIX/lib/w32api/* $SRC_DIR/$P_V/winsup/w32api/lib/ || die "Fail to copy new win32api libraries"
+			echo "done"
+			touch $SRC_DIR/$P_V/w32api-new.marker
+		}
+		echo "done"
 		touch $SRC_DIR/$P_V/integrate.marker
-	} 
+	}
+
 	local _conf_flags=(
 		--prefix=$PREFIX
 		--build=$HOST
@@ -82,19 +103,24 @@ src_configure() {
 		--disable-multilib
 		--enable-version-specific-runtime-libs
 		--with-newlib
-		--with-windows-headers=$PREFIX/$TARGET/include/w32api
-		--with-windows-libs=$PREFIX/$TARGET/lib/w32api
+		--with-windows-headers=$PREFIX/include/w32api
+		--with-windows-libs=$PREFIX/lib/w32api
 		--disable-rpath
 		--disable-sjlj-exceptions
 		--with-dwarf2
 		--disable-win32-registry
-		--with-{gmp,mpfr,mpc}=$PREFIX/prereq
+		--with-gnu-ld
+		--with-gnu-as
+		--with-gmp=${PREFIX}/prereq
+		--with-mpfr=${PREFIX}/prereq
+		--with-mpc=${PREFIX}/prereq
 		CFLAGS="\"${HOST_CFLAGS}\""
 		LDFLAGS="\"${HOST_LDFLAGS}\""
 		CPPFLAGS="\"${HOST_CPPFLAGS}\""
 	)
-	local _allconf="${_conf_flags[@]}"
-	func_configure $P_V $P_V "$_allconf"
+
+	local _allconf=${_conf_flags[@]}
+	func_configure $P $P_V "$_allconf"
 }
 
 pkg_build() {

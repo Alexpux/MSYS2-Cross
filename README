@@ -1,0 +1,44 @@
+The scripts provided by the MSYS2-Cross project are designed for building cross-toolchain for MSYS2 with MinGW compiler from MinGW-builds[2] project.
+
+The scripts are distributed under the 'BSD 3' license[1].
+
+In order to use the scripts provided by the MSYS2-Cross project it is needed:
+
+1. Windows
+
+2. Install MSYS:
+  http://sourceforge.net/projects/mingwbuilds/files/external-binary-packages/
+  Recommended version is rev9 or higher.
+
+3. Get the scripts into '<msys root>/home/<user>/MSYS2-Cross':
+  "cd && git clone git://github.com/Alexpux/MSYS2-Cross.git"
+
+4. In the MSYS file structure delete the '/MinGW' directory.
+
+5. Delete the paths pointing to any preinstalled MinGW from the 'PATH' environment variable.
+
+6. Go into the MSYS2-Cross root directory.
+  "cd && cd MSYS2-Cross"
+
+7. Build script has next parameters:
+  The '--buildroot=<path>' option specifies to the script to use '<path>' as build directory.
+    By default used <SCRIPTS_DIR>/work.
+  The '--install-top=<path>' option specifies to the script to use '<path>' as top installation directory.
+    By default used "C:/crosstools" directory.
+  The '--version' option print the version of MSYS2-Cross script.
+  For all available options please run: "./buildall --help"
+
+8. Run:
+  "./buildall x32" - for building 32-bit cross-toolchain
+  "./buildall x64" - for building 64-bit cross-toolchain (not working now)
+  "./buildall x32 x64" - for building both 32 and 64 bits cross-toolchains
+
+By default toolchain installing in "C:/crosstools/cross-msys-gcc-$GCC_VERSION".
+You may change install location by pass "--install-top=$DIRECTORY" to build script.
+
+For example:
+./buildall --install-top=C:/toolchain x32
+building 32-bit cross-toolchain and installing it into C:/toolchain/cross-msys-gcc-$GCC_VERSION.
+
+[1] http://www.opensource.org/licenses/BSD-3-Clause
+[2] https://sourceforge.net/projects/mingwbuilds

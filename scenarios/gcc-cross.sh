@@ -130,7 +130,7 @@ pkg_build() {
 	)
 	local _allmake="${_make_flags[@]}"
 	func_make \
-		${P_V} \
+		${P} \
 		"/bin/make" \
 		"$_allmake" \
 		"building gcc..." \
@@ -142,7 +142,7 @@ pkg_build() {
 	)
 	_allmake="${_make_flags[@]}"
 	func_make \
-		${P_V} \
+		${P} \
 		"/bin/make" \
 		"$_allmake" \
 		"installing gcc..." \
@@ -153,7 +153,7 @@ pkg_build() {
 	)
 	_allmake="${_make_flags[@]}"
 	func_make \
-		${P_V} \
+		${P} \
 		"/bin/make" \
 		"$_allmake" \
 		"building all..." \
@@ -167,7 +167,7 @@ pkg_install() {
 	)
 	local _allinstall="${_install_flags[@]}"
 	func_make \
-		${P_V} \
+		${P} \
 		"/bin/make" \
 		"$_allinstall" \
 		"installing all..." \

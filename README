@@ -25,6 +25,8 @@ In order to use the scripts provided by the MSYS2-Cross project it is needed:
     By default used <SCRIPTS_DIR>/work.
   The '--install-top=<path>' option specifies to the script to use '<path>' as top installation directory.
     By default used "C:/crosstools" directory.
+  The '--toolchains-dir=<path>' - specifies directory where installed Mingw 32-bit and 64-bit toolchains.
+	You must have mingw32 and mingw64 directories there.
   The '--version' option print the version of MSYS2-Cross script.
   For all available options please run: "./buildall --help"
 

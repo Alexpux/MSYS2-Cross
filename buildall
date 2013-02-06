@@ -62,8 +62,8 @@ ROOT_DIR=${TOP_DIR}/work
 UNPACK_DIR=${ROOT_DIR}/sources
 TOOLCHAINS_DIR=${TOP_DIR}/toolchains
 
-x32_HOST_MINGW_PATH=${TOOLCHAINS_DIR}/mingw32
-x64_HOST_MINGW_PATH=${TOOLCHAINS_DIR}/mingw64
+# Use system installed toolchains
+USER_DEFINED_TOOLCHAINS=no
 
 # MinGW-w64 toolchain links
 URL_MINGW32=http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev8.7z
@@ -73,10 +73,6 @@ URL_MINGW64=http://sourceforge.net/projects/mingwbuilds/files/host-windows/relea
 MAKE_OPTS="-j3"
 STATIC_LINK_FLAGS="--enable-static --disable-shared"
 SHARED_LINK_FLAGS="--enable-shared --disable-static"
-
-# How to link dependencies
-LNKDEPS=$SHARED_LINK_FLAGS
-STATIC_DEPS=no
 
 source versions.sh
 
@@ -89,6 +85,8 @@ RUN_ARGS="$@"
 	echo "                              Default is <SCRIPTS_DIR>/work"
 	echo "    --install-top           - specifies the top installation directory"
 	echo "                              Default is C:/crosstools/cross-msys-gcc-$GCC_VERSION"
+	echo "    --toolchains-dir=<path> - specifies directory where installed Mingw 32-bit and 64-bit toolchains"
+	echo "                              You must have mingw32 and mingw64 directories there"
 	echo "    --version               - pring the version of the MSYS2-Cross scripts"
 
 	exit 0
@@ -134,6 +132,17 @@ while [[ $# > 0 ]]; do
 			PREFIX_TOP=`pwd`
 			popd > /dev/null
 		;;
+		--toolchains-dir=*)
+			TOOLCHAINS_DIR=${1/--toolchains-dir=/}
+			TOOLCHAINS_DIR=${TOOLCHAINS_DIR//:/:\/}
+			TOOLCHAINS_DIR=${TOOLCHAINS_DIR//\/\//\/}
+			
+			mkdir -p ${TOOLCHAINS_DIR} || die "Incorrect directory ${TOOLCHAINS_DIR}"
+			pushd ${TOOLCHAINS_DIR} > /dev/null
+			TOOLCHAINS_DIR=`pwd`
+			popd > /dev/null
+			USER_DEFINED_TOOLCHAINS=yes
+		;;
 		--version) echo $MSYS2_CROSS_VERSION; exit 0 ;;
 		x32)
 			[[ ${BUILD_ARCHITECTURES[@]} =~ x32 ]] && { shift; continue; }
@@ -167,7 +176,12 @@ done
 	die "you can't build 64-bit programs using 32-bit OS. terminate."
 }
 
-toolchains_prepare
+x32_HOST_MINGW_PATH=${TOOLCHAINS_DIR}/mingw32
+x64_HOST_MINGW_PATH=${TOOLCHAINS_DIR}/mingw64
+
+[[ USER_DEFINED_TOOLCHAINS == no ]] && {
+	toolchains_prepare
+}
 
 [[ ! -d $x32_HOST_MINGW_PATH || ! -d $x64_HOST_MINGW_PATH ]] && {
 	die "Host toolchains is not installed. Terminate!"

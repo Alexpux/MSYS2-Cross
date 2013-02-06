@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-P=MPC
+P=mpc
 P_V=${P}-${MPC_VERSION}
 SRC_FILE="${P_V}.tar.gz"
 URL=URL=http://www.multiprecision.org/mpc/download/${SRC_FILE}

@@ -62,7 +62,7 @@ src_patch() {
 src_configure() {
 	local _conf_flags=(
 		--prefix=$PREFIX/prereq
-		--host=$HOST
+		--build=$HOST
 		$STATIC_LINK_FLAGS
 		--with-gmp=$PREFIX/prereq
 		--with-mpfr=$PREFIX/prereq

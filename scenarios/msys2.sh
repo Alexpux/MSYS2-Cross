@@ -42,7 +42,7 @@ URL=https://github.com/Alexpux/Cygwin.git
 DEPENDS=()
 
 src_download() {
-	func_download $P_V "git" $URL "msys2-64-dev"
+	func_download $P_V "git" $URL "msys2-1.0-dev"
 }
 
 src_unpack() {

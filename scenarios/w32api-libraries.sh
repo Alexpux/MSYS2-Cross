@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-P=mingw-w64-crt
+P=w32api-libraries
 P_V=
 SRC_FILE=
 URL=URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-crt

@@ -37,8 +37,8 @@ PACKAGES=(
 	gmp
 	mpfr
 	mpc
-	win32api-headers
-	win32api-libs
+	w32api-headers
+	w32api-libs
 	binutils
 	msys2
 	gcc-cross

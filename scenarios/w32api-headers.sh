@@ -35,7 +35,7 @@
 
 # **************************************************************************
 
-P=mingw-w64-headers
+P=w32api-headers
 P_V=${P}
 SRC_FILE=
 URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-headers

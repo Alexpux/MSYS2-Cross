@@ -1,0 +1,20 @@
+--- msys2/winsup/cygwin/Makefile.in.orig	2013-02-07 22:53:23 +0400
++++ msys2/winsup/cygwin/Makefile.in	2013-02-07 22:56:50 +0400
+@@ -75,7 +75,7 @@
+ MT_SAFE:=@MT_SAFE@
+ DEFS:=@DEFS@
+ CCEXTRA=
+-COMMON_CFLAGS=-MMD ${$(*F)_CFLAGS} -Werror -fmerge-constants -ftracer $(CCEXTRA)
++COMMON_CFLAGS=-MMD ${$(*F)_CFLAGS} -Wall -fmerge-constants -ftracer $(CCEXTRA)
+ COMPILE.cc+=${COMMON_CFLAGS} -mno-use-libstdc-wrappers
+ COMPILE.c+=${COMMON_CFLAGS}
+ 
+@@ -146,7 +146,7 @@
+ 
+ MALLOC_OFILES:=@MALLOC_OFILES@
+ 
+-DLL_IMPORTS:=${shell $(CC) -print-file-name=w32api/libkernel32.a} ${shell $(CC) -print-file-name=w32api/libntdll.a}
++DLL_IMPORTS:=${shell $(CC) -print-file-name=${WINDOWS_LIBDIR}/libkernel32.a} ${shell $(CC) -print-file-name=${WINDOWS_LIBDIR}/libntdll.a}
+ 
+ MT_SAFE_OBJECTS:=
+ #

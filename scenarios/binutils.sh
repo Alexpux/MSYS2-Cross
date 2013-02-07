@@ -61,7 +61,7 @@ src_patch() {
 
 src_configure() {
 	local _conf_flags=(
-		--prefix=$PREFIX
+		--prefix=/usr
 		--build=$HOST
 		--target=$TARGET
 		--disable-nls
@@ -90,6 +90,7 @@ pkg_build() {
 pkg_install() {
 	local _install_flags=(
 		${MAKE_OPTS}
+		DESTDIR=$PREFIX
 		install
 	)
 	local _allinstall="${_install_flags[@]}"

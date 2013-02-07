@@ -61,39 +61,35 @@ src_patch() {
 
 src_configure() {
 
-	[[ ! -f $SRC_DIR/$P_V/integrate.marker ]] && {
-		echo "--> Integrating sources in GCC tree"
-		[[ ! -f $SRC_DIR/$P_V/msys.marker ]] && {
-			echo -n "---> Copy msys sources to GCC source tree..."
-			cp -rf $SRC_DIR/msys2/newlib $SRC_DIR/$P_V/ || die "Fail to copy newlib sources"
-			cp -rf $SRC_DIR/msys2/winsup $SRC_DIR/$P_V/ || die "Fail to copy winsup sources"
-			echo "done"
-			touch $SRC_DIR/$P_V/msys.marker
-		}
+	[[ ! -f $SRC_DIR/$P_V/msys.marker ]] && {
+		echo -n "---> Copy msys sources to GCC source tree..."
+		cp -rf $SRC_DIR/msys2/newlib $SRC_DIR/$P_V/ || die "Fail to copy newlib sources"
+		cp -rf $SRC_DIR/msys2/winsup $SRC_DIR/$P_V/ || die "Fail to copy winsup sources"
+		echo "done"
+		touch $SRC_DIR/$P_V/msys.marker
+	}
 
-		[[ ! -f $SRC_DIR/$P_V/w32api-old.marker ]] && {
-			echo -n "---> Remove old win32api from source tree..."
-			[[ -d $SRC_DIR/$P_V/winsup/w32api ]] && {
-				rm -rf $SRC_DIR/$P_V/winsup/w32api/* || die "Fail to remove old win32api"
-			}
-			echo "done"
-			touch $SRC_DIR/$P_V/w32api-old.marker
-		}
-
-		[[ ! -f $SRC_DIR/$P_V/w32api-new.marker ]] && {
-			echo -n "---> Copy new win32api to source tree..."
-			mkdir -p $SRC_DIR/$P_V/winsup/w32api/{include,lib}
-			cp -rf $PREFIX/include/w32api/* $SRC_DIR/$P_V/winsup/w32api/include/ || die "Fail to copy new win32api headers"
-			cp -rf $PREFIX/lib/w32api/* $SRC_DIR/$P_V/winsup/w32api/lib/ || die "Fail to copy new win32api libraries"
-			echo "done"
-			touch $SRC_DIR/$P_V/w32api-new.marker
+	[[ ! -f $SRC_DIR/$P_V/w32api-old.marker ]] && {
+		echo -n "---> Remove old win32api from source tree..."
+		[[ -d $SRC_DIR/$P_V/winsup/w32api ]] && {
+			rm -rf $SRC_DIR/$P_V/winsup/w32api/* || die "Fail to remove old win32api"
 		}
 		echo "done"
-		touch $SRC_DIR/$P_V/integrate.marker
+		touch $SRC_DIR/$P_V/w32api-old.marker
+	}
+
+	[[ ! -f $SRC_DIR/$P_V/w32api-new.marker ]] && {
+		echo -n "---> Copy new win32api to source tree..."
+		mkdir -p $SRC_DIR/$P_V/winsup/w32api/{include,lib}
+		cp -rf $PREFIX/include/w32api/* $SRC_DIR/$P_V/winsup/w32api/include/ || die "Fail to copy new win32api headers"
+		cp -rf $PREFIX/lib/w32api/* $SRC_DIR/$P_V/winsup/w32api/lib/ || die "Fail to copy new win32api libraries"
+		echo "done"
+		touch $SRC_DIR/$P_V/w32api-new.marker
 	}
 
 	local _conf_flags=(
-		--prefix=$PREFIX
+		--prefix=/usr
+		--sysconfdir=/etc
 		--build=$HOST
 		--target=$TARGET
 		--disable-nls
@@ -101,6 +97,7 @@ src_configure() {
 		--disable-shared
 		--disable-threads
 		--disable-multilib
+		--disable-werror
 		--enable-version-specific-runtime-libs
 		--with-newlib
 		--with-windows-headers=$PREFIX/include/w32api
@@ -138,6 +135,7 @@ pkg_build() {
 	
 	_make_flags=(
 		${MAKE_OPTS}
+		DESTDIR=$PREFIX
 		install-gcc
 	)
 	_allmake="${_make_flags[@]}"
@@ -163,6 +161,7 @@ pkg_build() {
 pkg_install() {
 	local _install_flags=(
 		${MAKE_OPTS}
+		DESTDIR=$PREFIX
 		install
 	)
 	local _allinstall="${_install_flags[@]}"

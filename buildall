@@ -223,10 +223,10 @@ for ARCHITECTURE in ${BUILD_ARCHITECTURES[@]}; do
 
 	export PATH=$PREFIX/bin:$x32_HOST_MINGW_PATH/bin:$x64_HOST_MINGW_PATH/bin:$MINGW_PART_PATH:$MSYS_PART_PATH:$WINDOWS_PART_PATH
 
-	HOST_CFLAGS="$OPTIM -pipe -O2 -fomit-frame-pointer"
+	HOST_CFLAGS="-pipe -O2 -fomit-frame-pointer"
 	HOST_CXXFLAGS="${HOST_CFLAGS}"
-	HOST_CPPFLAGS="-I${PREFIX}/include"
-	HOST_LDFLAGS="-pipe -s -L${PREFIX}/lib"
+	HOST_CPPFLAGS=
+	HOST_LDFLAGS="-pipe"
 
 	echo "-> Start building"
 

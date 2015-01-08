@@ -38,7 +38,7 @@
 P=w32api-headers
 P_V=${P}
 SRC_FILE=
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-headers
+URL=http://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-headers
 
 src_download() {
 	func_download $P_V "svn" $URL
@@ -58,7 +58,7 @@ src_configure() {
 		--target=$TARGET
 		--enable-sdk=all
 		--enable-w32api
-		--enable-secure-api 
+		--enable-secure-api
 		CFLAGS="\"${HOST_CFLAGS}\""
 		LDFLAGS="\"${HOST_LDFLAGS}\""
 		CPPFLAGS="\"${HOST_CPPFLAGS}\""

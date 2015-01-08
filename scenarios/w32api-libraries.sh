@@ -38,7 +38,7 @@
 P=w32api-libraries
 P_V=${P}
 SRC_FILE=
-URL=http://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk/mingw-w64-crt
+URL=http://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-crt
 DEPENDS=()
 
 src_download() {
